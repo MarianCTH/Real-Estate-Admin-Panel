@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -6,221 +7,188 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-
 import Badge from "../ui/badge/Badge";
-import Image from "next/image";
+import Input from "../form/input/InputField";
+import Button from "../ui/button/Button";
 
-interface Order {
-  id: number;
-  user: {
-    image: string;
-    name: string;
-    role: string;
-  };
-  projectName: string;
-  team: {
-    images: string[];
-  };
-  status: string;
-  budget: string;
-}
-
-// Define the table data using the interface
-const tableData: Order[] = [
+const initialTableData = [
   {
     id: 1,
     user: {
-      image: "/images/user/user-17.jpg",
       name: "Lindsey Curtis",
       role: "Web Designer",
     },
     projectName: "Agency Website",
-    team: {
-      images: [
-        "/images/user/user-22.jpg",
-        "/images/user/user-23.jpg",
-        "/images/user/user-24.jpg",
-      ],
-    },
     budget: "3.9K",
     status: "Active",
   },
   {
     id: 2,
     user: {
-      image: "/images/user/user-18.jpg",
-      name: "Kaiya George",
-      role: "Project Manager",
+      name: "Mark Johnson",
+      role: "Software Engineer",
     },
-    projectName: "Technology",
-    team: {
-      images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
-    },
-    budget: "24.9K",
+    projectName: "E-commerce App",
+    budget: "10K",
     status: "Pending",
   },
   {
     id: 3,
     user: {
-      image: "/images/user/user-17.jpg",
-      name: "Zain Geidt",
-      role: "Content Writing",
+      name: "Emily Davis",
+      role: "Project Manager",
     },
-    projectName: "Blog Writing",
-    team: {
-      images: ["/images/user/user-27.jpg"],
-    },
-    budget: "12.7K",
-    status: "Active",
+    projectName: "Marketing Campaign",
+    budget: "5K",
+    status: "Completed",
   },
   {
     id: 4,
     user: {
-      image: "/images/user/user-20.jpg",
-      name: "Abram Schleifer",
-      role: "Digital Marketer",
+      name: "John Smith",
+      role: "UI/UX Designer",
     },
-    projectName: "Social Media",
-    team: {
-      images: [
-        "/images/user/user-28.jpg",
-        "/images/user/user-29.jpg",
-        "/images/user/user-30.jpg",
-      ],
-    },
-    budget: "2.8K",
-    status: "Cancel",
-  },
-  {
-    id: 5,
-    user: {
-      image: "/images/user/user-21.jpg",
-      name: "Carla George",
-      role: "Front-end Developer",
-    },
-    projectName: "Website",
-    team: {
-      images: [
-        "/images/user/user-31.jpg",
-        "/images/user/user-32.jpg",
-        "/images/user/user-33.jpg",
-      ],
-    },
-    budget: "4.5K",
+    projectName: "Mobile App Redesign",
+    budget: "8.5K",
     status: "Active",
   },
 ];
 
 export default function UsersTable() {
-  return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[1102px]">
-          <Table>
-            {/* Table Header */}
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-              <TableRow>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  User
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Project Name
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Team
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Status
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Budget
-                </TableCell>
-              </TableRow>
-            </TableHeader>
+  const [users, setUsers] = useState(initialTableData);
+  const [formData, setFormData] = useState({
+    name: "",
+    role: "",
+    projectName: "",
+    status: "Active",
+    budget: "",
+  });
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [filter, setFilter] = useState({ projectName: "", budget: "" });
+  const [editingId, setEditingId] = useState(null);
+  const [errors, setErrors] = useState({ budget: "" });
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
-            {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {tableData.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="px-5 py-4 sm:px-6 text-start">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 overflow-hidden rounded-full">
-                        <Image
-                          width={40}
-                          height={40}
-                          src={order.user.image}
-                          alt={order.user.name}
-                        />
-                      </div>
-                      <div>
-                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {order.user.name}
-                        </span>
-                        <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {order.user.role}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {order.projectName}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <div className="flex -space-x-2">
-                      {order.team.images.map((teamImage, index) => (
-                        <div
-                          key={index}
-                          className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                        >
-                          <Image
-                            width={24}
-                            height={24}
-                            src={teamImage}
-                            alt={`Team member ${index + 1}`}
-                            className="w-full"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <Badge
-                      size="sm"
-                      color={
-                        order.status === "Active"
-                          ? "success"
-                          : order.status === "Pending"
-                          ? "warning"
-                          : "error"
-                      }
-                    >
-                      {order.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {order.budget}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setUsers(users.filter((user) => user.id !== id));
+      setSuccessMessage("User successfully deleted."); // Display message on delete
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "budget" && isNaN(value)) {
+      setErrors({ ...errors, budget: "Budget must be a number" });
+    } else {
+      setErrors({ ...errors, budget: "" });
+    }
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (errors.budget) return;
+  
+    const newId = Date.now(); // Use the current timestamp for a unique ID
+  
+    if (editingId !== null) {
+      setUsers(
+        users.map((user) =>
+          user.id === editingId
+            ? {
+                ...user,
+                user: { name: formData.name, role: formData.role },
+                projectName: formData.projectName,
+                status: formData.status,
+                budget: formData.budget,
+              }
+            : user
+        )
+      );
+      setEditingId(null);
+      setSuccessMessage("User successfully updated.");
+    } else {
+      const newUser = {
+        id: newId, // Use the unique timestamp as the ID
+        user: {
+          name: formData.name,
+          role: formData.role,
+        },
+        projectName: formData.projectName,
+        status: formData.status,
+        budget: formData.budget,
+      };
+      setUsers([...users, newUser]);
+      setSuccessMessage("User successfully added.");
+    }
+    setFormData({ name: "", role: "", projectName: "", status: "Active", budget: "" });
+  };
+  
+
+  const handleEdit = (user) => {
+    setFormData({
+      name: user.user.name,
+      role: user.user.role,
+      projectName: user.projectName,
+      status: user.status,
+      budget: user.budget,
+    });
+    setEditingId(user.id);
+  };
+
+  const handleSort = () => {
+    const sortedUsers = [...users].sort((a, b) => {
+      return sortOrder === "asc"
+        ? a.user.name.localeCompare(b.user.name)
+        : b.user.name.localeCompare(a.user.name);
+    });
+    setUsers(sortedUsers);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  return (
+    <div>
+      {successMessage && <div className="p-4 bg-green-200 text-green-800 mb-4">{successMessage}</div>} {/* Display success message */}
+
+      <form onSubmit={handleSubmit} className="mb-4 p-4 bg-white shadow rounded">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+          <Input type="text" name="role" placeholder="Role" value={formData.role} onChange={handleChange} required />
+          <Input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleChange} required />
+          <Input type="text" name="budget" placeholder="Budget" value={formData.budget} onChange={handleChange} required />
+          {errors.budget && <p className="text-red-500 text-sm">{errors.budget}</p>}
         </div>
-      </div>
+        <Button type="submit" className="mt-4 w-full">{editingId ? "Update User" : "Add User"}</Button>
+      </form>
+
+      <Button onClick={handleSort} className="mb-4">Sort by Name ({sortOrder})</Button>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell>User</TableCell>
+            <TableCell>Project Name</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Budget</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.user.name} ({user.user.role})</TableCell>
+              <TableCell>{user.projectName}</TableCell>
+              <TableCell><Badge>{user.status}</Badge></TableCell>
+              <TableCell>{user.budget}</TableCell>
+              <TableCell>
+                <Button onClick={() => handleEdit(user)}>Edit</Button>
+                <Button onClick={() => handleDelete(user.id)} className="ml-2 bg-red-500">Delete</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
