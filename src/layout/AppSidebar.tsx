@@ -37,6 +37,11 @@ const navItems: NavItem[] = [
     path: "/users",
   },
   {
+    name: "Monitored Users",
+    icon: <UserCircleIcon />,
+    path: "/monitored",
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",
@@ -102,11 +107,53 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
 
+  // Check if the logged-in user is admin
+  let isAdmin = false;
+  if (typeof window !== 'undefined') {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    isAdmin = user.type === 'admin';
+  }
+
+  // Add Monitored Users nav item for admins
+  const adminNavItems = isAdmin
+    ? [
+        {
+          name: 'Monitored Users',
+          icon: <UserCircleIcon />,
+          path: '/monitored-users',
+        },
+      ]
+    : [];
+
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "others"
   ) => (
     <ul className="flex flex-col gap-4">
+      {/* Admin-only nav items */}
+      {menuType === 'main' && adminNavItems.map((nav, index) => (
+        <li key={nav.name}>
+          <Link
+            href={nav.path}
+            className={`menu-item group ${
+              isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+            }`}
+          >
+            <span
+              className={`$ {
+                isActive(nav.path)
+                  ? "menu-item-icon-active"
+                  : "menu-item-icon-inactive"
+              }`}
+            >
+              {nav.icon}
+            </span>
+            {(isExpanded || isHovered || isMobileOpen) && (
+              <span className={`menu-item-text`}>{nav.name}</span>
+            )}
+          </Link>
+        </li>
+      ))}
       {navItems.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (

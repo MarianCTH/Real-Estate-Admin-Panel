@@ -9,13 +9,21 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function BarChartOne() {
+interface BarChartOneProps {
+  data: {
+    name: string;
+    value: number;
+  }[];
+  title?: string;
+}
+
+export default function BarChartOne({ data, title }: BarChartOneProps) {
   const options: ApexOptions = {
     colors: ["#465fff"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",
-      height: 180,
+      height: 400,
       toolbar: {
         show: false,
       },
@@ -37,37 +45,35 @@ export default function BarChartOne() {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: data.map(item => item.name),
       axisBorder: {
         show: false,
       },
       axisTicks: {
         show: false,
       },
+      labels: {
+        style: {
+          fontSize: '14px'
+        }
+      }
     },
     legend: {
       show: true,
       position: "top",
       horizontalAlign: "left",
       fontFamily: "Outfit",
+      fontSize: '16px'
     },
     yaxis: {
       title: {
         text: undefined,
       },
+      labels: {
+        style: {
+          fontSize: '14px'
+        }
+      }
     },
     grid: {
       yaxis: {
@@ -87,12 +93,15 @@ export default function BarChartOne() {
       y: {
         formatter: (val: number) => `${val}`,
       },
+      style: {
+        fontSize: '14px'
+      }
     },
   };
   const series = [
     {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      name: title || "Value",
+      data: data.map(item => item.value),
     },
   ];
   return (
@@ -102,7 +111,7 @@ export default function BarChartOne() {
           options={options}
           series={series}
           type="bar"
-          height={180}
+          height={400}
         />
       </div>
     </div>
